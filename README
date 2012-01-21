@@ -1,0 +1,73 @@
+Esquema de programación curso básico de DHCP
+
+Impartido por Carlos Maldonado
+cmaldonado@covetel.com.ve
+
+- Introducción a DHCP
+ * Arrendado (leasing)
+ * Reclamación (reclamation)
+ * Asignación y tipos (allocation)
+  = Estática
+  = Dinámica
+  = Automática
+ * Ejemplos
+- Instalación y configuración
+ * Instalación
+  = Versiones disponibles
+ * Configuración
+  = Declaración de sub-redes
+  = Asignación de direcciones de cada sub-red
+  = Parámetros y opciones
+  = Duración y extensión de arrendamientos
+  = Ejemplo aplicado
+- Modelo Cliente/Servidor de DHCP
+ * Objetivos y buenas prácticas
+ * Arquitectura
+ * Mensajes
+  = Formato
+  = Opciones
+  = Estados del lado del cliente
+  = Ejemplos
+ * Transmisión
+  = UDP
+  = Retransmisión
+  = Mensajes autenticados
+  = Otros
+ * Identificación de clientes
+  = Asignación estática
+  = Asignación estática y dinámica
+  = Asignación automática
+  = Control de acceso
+  = Ejemplos
+ * Interacción DNS-DHCP
+  = Actualización de DNS con información del DHCP
+  = Expiración y reubicación
+  = Cambio del nombre de cliente
+  = Ejemplo aplicado
+ * Servidor DHCP de la ISC
+  = Donde conseguirlo
+  = Prerrequisitos
+  = Configuración
+  = Ejecución
+  = Uso
+  = Configuración avanzada
+  = Ejemplos
+- Protocolo de fail-over
+ * Tipos de operación y cada uno de sus estados
+  = COMMUNICATIONS-INTERRUPTED
+  = PARTNER-DOWN
+  = STARTUP
+  = RECOVER
+  = POTENTIAL-CONFLICT
+  = CONFLICT-DONE
+  = RESOLUTION-INTERRUPTED
+ * Configurando un DHCP en fail-over
+  = Relaciones
+  = Configuración
+  = Operación
+  = Problemas específicos
+- Configuración de clases
+ * Dispositivos por fabricante
+ * Dispositivos por dirección física
+- Entonamiento de un DHCP
+ * Depuración de problemas
