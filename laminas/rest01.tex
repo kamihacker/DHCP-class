@@ -405,16 +405,43 @@ ubicación dentro de la red MAY}
 
 \end{verbatim} 
 
-    Dependiendo de la ubicación en el laboratorio, se hará la asignación de
-    máquinas, todas pueden ser visualizadas con el comando
+    Dependiendo de la ubicación de los participantes en el
+    laboratorio, se hará la asignación de máquinas en pares,
+    todas pueden ser visualizadas con el comando:\\[0.2cm]
 
 \begin{verbatim}
 
     vzlist
 
 \end{verbatim} 
+     
+    Las máquinas listadas se encuentran diferenciadas por el identificador
+    'CTID' en los campos del tope de la lista.  Cada participante tiene
+    asignadas dos máquinas, una en la serie 31x y una en la serie 32x.
+    Las máquinas de la serie 31x están destinadas a ser máquina servidor
+    y las máquinas de la serie 32x están diseñadas como máquina cliente.\\[0.2cm]
 
+    El comando usado para acceder a las máquinas virtuales, es el siguiente:
+
+\begin{verbatim}
+
+    vzctl enter [CTID]
+
+\end{verbatim}
+
+    Esto le ubicará dentro de la máquina virtual indicada por 'CTID'.
+    Si desea saber en que host esta la sesión actual, puede usar el
+    comando:\\[0.2cm]
+
+\begin{verbatim}
+
+    uname -a
+    
+\end{verbatim}
+
+    Cada máquina tiene establecido si es una máquina cliente o servidor en su
+    hostname.
 
 \end{frame}
-
+    
 \end{document}
