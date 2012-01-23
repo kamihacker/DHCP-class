@@ -4,13 +4,14 @@ Impartido por Carlos Maldonado
 cmaldonado@covetel.com.ve
 
 - Introducción a DHCP
- * Arrendado (leasing)
- * Reclamación (reclamation)
  * Asignación y tipos (allocation)
   = Estática
   = Dinámica
   = Automática
- * Ejemplos
+ * Arrendado (leasing)
+ * Reclamación (reclamation)
+ * Liberación (release)
+ * Ejemplo
 - Instalación y configuración
  * Instalación
   = Versiones disponibles
@@ -69,5 +70,15 @@ cmaldonado@covetel.com.ve
 - Configuración de clases
  * Dispositivos por fabricante
  * Dispositivos por dirección física
-- Entonamiento de un DHCP
- * Depuración de problemas
+- Depuración de problemas
+ * Descubriendo el problema
+  = Falla en adquirir o renovar un arrendamiento
+  = Información incorrecta de parte del DHCP
+ * Determinando el problema
+  = Cliente que no puede recibir paquetes DHCP del servidor
+  = Servidor que puede recibir paquetes DHCP pero el cliente no recibe sus
+  respuestas
+  = Servidor que no tiene direcciones para asignar o esta configurado para no
+  asignar direcciones a un cliente determinado
+  = Más de un servidor DHCP existe, y los servidores podrían estar configurados
+  de tal manera que interfieren el uno con el otro

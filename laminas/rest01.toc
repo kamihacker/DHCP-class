@@ -1,0 +1,7 @@
+\beamer@endinputifotherversion {3.10pt}
+\select@language {spanish}
+\beamer@sectionintoc {1}{Introducci\IeC {\'o}n a DHCP}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Fundamentos de DHCP}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Asignaci\IeC {\'o}n de direcciones}{7}{0}{1}
+\beamer@subsectionintoc {1}{3}{Funciones principales del DHCP}{9}{0}{1}
+\beamer@subsectionintoc {1}{4}{Ejemplo inicial de funcionamiento}{13}{0}{1}

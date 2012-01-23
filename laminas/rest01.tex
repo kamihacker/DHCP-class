@@ -1,9 +1,9 @@
 \input{preambulo.tex}
 
 % Titulo
-\title[REST] {WebService REST con Catalyst}
-\author[Walter Vargas]{ info@covetel.com.ve \inst{1}}
-\subtitle{Fundamentos de HTTP 1.1}
+\title[DHCP] {DHCP del Internet Software Consortium}
+\author[Carlos Maldonado]{ info@covetel.com.ve \inst{1}}
+\subtitle{Fundamentos y Configuraciones Típicas}
 \institute[covetel.com.ve]{ \inst{1} Cooperativa Venezolana de Tecnologías Libres R.S. }
 \date
 
@@ -17,288 +17,285 @@
     \tableofcontents
 \end{frame}
 
-\section{Fundamentos de HTTP}
+\section{Introducción a DHCP}
 
-\begin{frame}[allowframebreaks,fragile]{Hypertext Transfer Protocol} % (fold)
-    Hypertext Transfer Protocol o \textbf{HTTP} (en español protocolo de transferencia
-    de hipertexto) es el protocolo usado en cada transacción de la World Wide
-    Web. \\[0.2cm]
+\subsection{Fundamentos de DHCP} % (fold)
 
-    Fue desarrollado por la W3C y la IETF, esta colaboración culminó en 1999
-    con la publicación de una serie de RFC, el más importante de ellos es el
-    \textbf{RFC 2616}. \\[0.2cm]
+\label{sub:Fundamentos de DHCP}
 
-    El protocolo HTTP esta orientado a transacciones y sigue el esquema
-    petición-respuesta entre un cliente y un servidor. \\[0.2cm]
+% subsection Fundamentos de DHCP (end)
 
-    El cliente que efectua la petición se le conoce como \textit{User Agent} o
-    \textbf{Agente de Usuario} este puede ser un navegador web, un
-    \textit{spider} u otros. \\[0.2cm]
+\begin{frame}[allowframebreaks,fragile]{Dynamic Host Control Protocol} % (fold)
+    Dynamic Host Control Protocol o \textbf{DHCP} (en castellano, protocolo de
+    control de máquinas dinámicas) es el protocolo usado para asignar
+    direcciones de manera automática y dinámica en redes de computadores. \\[0.2cm]
 
-    La información transmitida se llama \textbf{recurso}. \\[0.2cm]
+    Desarrollado por el Dynamic Host Configuration Working Group del IETF desde
+    1993 a 1997 y reflejado en los \textbf{RFC 1351} y \textbf{RFC 2616}. \\[0.2cm]
 
-    La información se identifica mediante un \textit{Uniform Resource Locator}
-    (\textbf{URL}) o Localizador Uniforme de Recursos, cuyo formato general es: 
-    \begin{verbatim}
-esquema://maquina/directorio/recurso
-    \end{verbatim}
+    El protocolo DHCP esta diseñado para satisfacer la demanda de operaciones
+    donde es necesario automatizar la configuración de computadores en red. \\[0.2cm]
 
-    Los recursos transmitidos pueden ser archivos, cadenas de texto, una
-    consulta a una base de datos, o cualquier otro tipo de información. \\[0.2cm]
+    La máquina que efectua la petición se le conoce como \textit{Cliente} y
+    existen implementaciones de el programa cliente en practicamente cualquier
+    plataforma de hardware y sistema operativo. \\[0.2cm]
 
-    \textit{Stateless}, HTTP es un protocolo \textbf{sin estado}, esto quiere
-    decir, que no guarda ninguna información sobre conexiones anteriores.  \\[0.2cm]
+    La información transmitida entre cliente y servidor son paquetes no
+    superiores a la MTU \textbf{Maximum Transfer Unit} del protocolo de capa 2
+    que use la red, tipicamente este protocolo es Ethernet o una de
+    sus variantes más rápidas. \\[0.2cm]
 
-    Para mantener información del estado entre transacción y transacción se
-    utilizan las \textit{cookies},  que es información que un servidor puede
-    almacenar en el sistema cliente.
+    La razón para esta limitación estriba en que es necesario que toda la
+    información pueda ser enviada en un solo paquete que será enviado en
+    modo broadcast, dado que la máquina cliente que hace la petición, no tiene
+    una dirección de red (capa 3) con la cual enviar su paquete y recibir una
+    respuesta usando dicha dirección. \\[0.2cm]
+
+    DHCP es un protocolo \textbf{sin estado} (\textit{Stateless}), esto quiere
+    decir que no guarda ninguna información sobre conexiones anteriores. La
+    única información que se almacena, son las direcciones que se han entregado
+    (arrendado) a los distintos clientes que han hecho peticiones.\\[0.2cm]
+
+    Además de la dirección IP, existen otros valores de configuración que se
+    pueden establecer mediante el uso de DHCP. Routers por omisión, DNS
+    primario y secundario, máscara de red, dirección de broadcast y servidores
+    WINS, entre otras.\\[0.2cm]
+
 \end{frame} 
 
-\subsection{Transacciones HTTP} % (fold)
+\begin{frame}[allowframebreaks,fragile]{Mitos comunes detrás del DHCP} % (fold)
 
-\begin{frame}{Transacciones HTTP} % (fold)
-    Una transacción HTTP está formada por un encabezado seguido, opcionalmente,
-    por una línea en blanco y algún dato. El encabezado especificará cosas como
-    la acción requerida del servidor, o el tipo de dato retornado, o el código
-    de estado. \\[0.5cm]
-
-    Un encabezado es un bloque de datos que precede a la información
-    propiamente dicha. \\[0.5cm]
-
-    El servidor puede excluir cualquier encabezado que ya esté procesado, como
-    Authorization, Content-type y Content-length. \\[0.5cm]
-\end{frame}
-
-\begin{frame}{Formato de mensajes} % (fold)
-    Cada transacción HTTP es una comunicación distinta. En cada una de ellas se
-    intercambian mensajes. Según la especificación del protocolo, un mensaje es
-    \textit{la unidad básica de la comunicación HTTP y consiste de una
-    secuencia estructurada de octetos ordenados con formato válido y
-    transmitidos por la conexión.}
-
-    Hay dos tipos de mensajes, petición o solicitud (Request) y respuesta
-    (Response), cada uno con su estructura, pero a groso modo el formato de un
-    mensaje genérico sería el siguiente: 
-
-\begin{itemize}
-	\item Línea de comienzo: tipo de petición o tipo de respuesta.
-	\item Cero o más líneas de encabezado acabadas en CRLF.
-	\item Separador, que no es más que otro CRLF.
-	\item Cuerpo del mensaje.
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile, allowframebreaks]{Ejemplo de un diálogo HTTP} % (fold)
-
-\begin{itemize}
-    \item Prepare un servidor HTTP utilizando el módulo
-    \texttt{Net::Server::HTTP}
-    \footnotesize{
-    \begin{verbatim}
-$ perl -e 'use Net::Server::HTTP; Net::Server::HTTP->run(port=>3001)'
-    \end{verbatim}
-    }
-    \item Si no tiene instalado telnet, por favor instalelo. 
-    \item Utilizando telnet, conectese al puerto 3001 en \texttt{localhost}
-    para iniciar un diálogo HTTP. 
-    \begin{verbatim}
-$ telnet localhost 3001
-    \end{verbatim}
-    \item Al conectarse exitosamente debe ver el siguiente mensaje: 
-    \begin{verbatim}
-Trying 127.0.0.1...
-Connected to localhost.
-Escape character is '^]'.
-    \end{verbatim}
-    \item Es hora de enviar nuestra petición. 
-\begin{verbatim}
-GET / HTTP/1.0 
-Host: localhost
-User-Agent: mi navegador 
-\end{verbatim}
-    \item El servidor responde de la siguiente manera: 
-\begin{verbatim}
-HTTP/1.0 200 OK
-Date: Mon Sep 26 18:09:39 2011 GMT
-Connection: close
-Server: Net::Server::HTTP/0.99
-Content-type: text/html
-
-\end{verbatim}
-    \item Una linea en blanco y luego los datos 
-\begin{verbatim}
-<form method=post action=/bam><input type=text name=foo><input type=submit></form>
-<pre>%ENV = (
-         'HTTP_HOST' => 'localhost',
-         'HTTP_USER_AGENT' => 'mi navegador',
-         'NET_SERVER_SOFTWARE' => 'Net::Server::HTTP/0.99',
-\end{verbatim}
-
-\end{itemize}
-\end{frame}
-
-\subsection{Peticiones HTTP} % (fold)
-
-% subsection Peticiones HTTP (end)
-
-\begin{frame}[fragile]{Peticiones HTTP \textit{Request}} % (fold)
-
-    Una petición HTTP, en su formato más básico, tiene la siguiente sintaxis:
-    \begin{verbatim}
-método  URI  versión
-    \end{verbatim}
-
-    El método le indica al servidor que hacer con el URI , por último la
-    versión simplemente indica el número de versión del protocolo que el
-    cliente entiende. Una petición habitual utiliza el método GET para pedirle
-    al servidor que devuelva el URI solicitado:
+    \textbf{Exceso de tráfico broadcast:} es un mal concepto ampliamente
+    difundido, que DHCP generaría una gran cantidad de tráfico \textit{broadcast},
+    en realidad la cantidad de \textit{broadcast} es mínima. En el peor de los
+    casos, con un cliente de capacidades limitadas, el intercambio de paquetes
+    broadcast serían cuatro.\\[0.2cm]
     
-    \begin{verbatim}
-GET /index.html HTTP/1.0
-    \end{verbatim}
+    En el mejor de los casos, que comprende una gran mayoría de los sistemas
+    operativos, el cliente necesitaría solo enviar un paquete \textit{broadcast}
+    y no requeriría una respuesta \textit{broadcast}. La mayoría de los servidores
+    también pueden responder en modo \textit{unicast}.\\[0.2cm]
+
+    Otro mito es que el \textit{broadcast} abarcaría toda red corporativa,
+    cuando en realidad, solo esta limitado al segmento de red donde la máquina
+    cliente del DHCP está conectada. El resto del tráfico sería \textit{unicast}.\\[2cm]
+
+    \textbf{Exceso de carga en el servidor:} otro concepto común es que un
+    servidor DHCP necesitaría mucho poder de cómputo para brindarle servicio a
+    miles de máquinas. Sin embargo, es posible darle servicio a alrededor de
+    10.000 clientes con una máquina 486 con Linux.\\[0.2cm]
+
+\end{frame} 
+
+\subsection{Asignación de direcciones} % (fold)
+
+
+\begin{frame}[allowframebreaks,fragile]{Tipos de asignación} % (fold)
+    \textbf{Asignación estática:} el servidor recibe una listado con
+    información que identifica a los clientes DHCP. Dicho listado permite
+    diferenciar a cada uno de los clientes. Para cada identificador, se
+    establece una dirección IP que debe ser asignada a dicho cliente.
+    Si el cliente es móvil, debe haber una direccción para dicho
+    dispositivo en cada rango de la red. \\[0.2cm]
+
+    \textbf{Asignación dinámica:} el servidor recibe un rango de direcciones
+    para cada segmento de red donde se espera que hayan clientes DHCP. Cuando
+    el cliente solicita una dirección, el servidor consigue una dirección
+    disponible en dicho segmento de red para entregarla al cliente.\\[0.2cm]
+
+    \textbf{Asignación automática:} el servidor asigna una dirección de la
+    misma manera que en el método dinámico, solo que dicha dirección se asigna
+    de manera permanente al mismo cliente. Una manera aproximada de usar dicho
+    modo de asignación es utilizar \textit{leases} muy largos.\\[0.2cm]
+
+    \framebreak
+
+    \textbf{Asignación híbrida:} existen una variedad de métodos híbridos que
+    son posibles con DHCP. Por ejemplo una estrategia común es asignar
+    direcciones fijas a los clientes DHCP registrados, permitiendo que los
+    clients DHCP no registrados adquieran direcciones IP asignadas de manera
+    dinámica.\\[0.2cm]
+
+    Cual de estas estrategias ha de utilizarse en una red en particular, es una
+    decision que queda de parte del administrador. Obviamente, mantener un
+    registro de todos los clientes DHCP conectados en una red es una carga de
+    trabajo considerable que en algunos entornos vale la pena.\\[0.2cm]
+
+    Es necesario resaltar que DHCP no debe usarse como mecanismo de seguridad,
+    si el cliente DHCP elige no seguir el protocolo, el administrador puede
+    hacer poco más que, detectar el dispositivo y bloquearlo. Usar control de acceso
+    puede ser conveniente, pero no evita el acceso no autorizado a una
+    red.\\[0.2cm]
     
 \end{frame}
 
-\begin{frame}{Respuesta del Servidor} % (fold)
-    Generalmente el servidor envía al cliente la siguiente información: 
+\subsection{Funciones principales del DHCP} % (fold)
+\label{sub:Funciones principales del DHCP}
+
+% subsection Funciones principales del DHCP (end)
+
+\begin{frame}{Arrendado (leasing)} % (fold)
+
+    Tal y como se explicó que el servidor DHCP es \textit{Stateless} y
+    opera de manera automática, este no puede saber que ha pasado con los
+    dispositivos después de que se les asigna una dirección. En vez de asignar una
+    dirección IP a cada cliente hasta que este termine de usarla, el servidor
+    DHCP asigna una dirección con un \textit{lease} y el cliente esta
+    autorizado a usarla hasta el final de la duración de dicho
+    \textit{lease}.\\[0.2cm]
+
+
+\end{frame}
+
+\begin{frame}{Reclamación (reclamation)} % (fold)
+
+    Al restringir los clientes a usar direcciones IP, solo hasta que expiren
+    los \textit{leases} y al proveer un mecanismo para que actualicen los
+    \textit{leases} mientras esten activos y conectados a la red, DHCP permite
+    'reclamar' las direcciones IP que no están en uso. Si un dispositivo esta
+    apagado por un periodo extendido de tiempo, debe contactar al servidor DHCP
+    y solicitar una dirección cuando se activa. Si la dirección anterior no
+    está disponible, se le ofrece una nueva dirección. Esto evita la mayoría de
+    los conflictos de asignación de direcciones.
+
+\end{frame}
+
+\begin{frame}{Liberación (release)} % (fold)
+
+    Un cliente puede renunciar a su \textit{lease} sobre una dirección, antes
+    de su expiración, por ejemplo cuando una máquina va a moverse de una red a
+    otra, de manera que el servidor sepa que la dirección queda disponible
+    inmediatamente para ser reasignada. Algunos clientes DHCP pueden
+    configurarse para renunciar a su dirección cada vez que la máquina se
+    apaga. El cliente no espera una respuesta a dicha transacción.
+
+\end{frame}
+
+\begin{frame}{Descripción de servicios} % (fold)
+
+   Además de distribuir direcciones IP, DHCP permite configurar información que
+   sea distribuida en la forma de opciones de DHCP, incluyendo las siguientes:
+
+   \begin{itemize}
+       \item Dirección del router por omisión
+       \item Dirección(es) de servidor(es) DNS
+       \item Nombre del archivo para hacer boot de una máquina (para dispositivos que inician
+       cargando archivos desde un dispositivo de almacenamiento disponible en
+       la red)
+       \item Nombre del sistema de archivos y servidor de swap (para clientes
+       DHCP sin disco)
+   \end{itemize}
+
+\end{frame}
+
+\subsection{Ejemplo inicial de funcionamiento} % (fold)
+\label{sub:Ejemplo inicial de funcionamiento}
+
+% subsection Ejemplo inicial de funcionamiento (end)
+
+\begin{frame}[allowframebreaks,fragile]{Ejemplo básico de direccionamiento DHCP} % (fold)
+
+    A continuación veremos una red de ejemplo en la organización ficticia MAY,
+    cinco segmentos de red, todos ellos conectados entre si por un router que
+    a su vez los conecta a Internet. Cuatro segmentos de red son usados por las
+    estaciones de escritorio del personal de la empresa, el segmento restante
+    se usa para los servidores que se encuentran alojados en el centro de
+    datos. 
+
+    \begin{figure}
+    \begin{center}
+
+    \includegraphics[scale=0.65]{images/2-1.png}
+    \caption{Diagrama de la red MAY}
+    \label{MAY-1}
+
+    \end{center}
+    \end{figure}
+
+    El administrador de la red, ha obtenido cinco redes IP clase C desde la
+    192.168.11.0 hasta la 192.168.15.0 y se han asignado a los segmentos de red
+    como se muestran en la siguiente figura 
+
+    \begin{figure}
+    \begin{center}
+
+    \includegraphics[scale=0.65]{images/2-2.png}
+    \caption{Diagrama de la red MAY con direcciones de red}
+    \label{MAY-2}
+
+    \end{center}
+    \end{figure}
+
+    El objetivo es lograr que un servidor DHCP se encargue de gestionar la
+    configuración de las computadoras conectadas a la red MAY. Ahora
+    describiremos brevemente las interacciones entre un computador de
+    escritorio y el servidor DHCP de la red MAY, en las siguientes instancias:
 
     \begin{itemize}
-        \item Un código de estado que indica si la petición fue correcta o no. 
-        \item El recurso solicitado. 
-        \item Información sobre el recurso que se retorna. 
+        \item Cuando un computador se conecta por primera vez a la red MAY
+        \item Cuando un computador se reinicia
+        \item Cuando un computador es cambiado de ubicación dentro de la red MAY
+        \item Cuando un computador es eliminado de la red MAY
     \end{itemize}
-\end{frame}
 
-\subsection{Versiones} % (fold)
+    \begin{figure}
+    \begin{center}
 
-\begin{frame}{Versiones} % (fold)
-    \begin{description}
-        \item[0.9] Obsoleta, solo soportaba el método GET. 
-        \item[HTTP/1.0] (mayo de 1996) Esta es la primera revisión del
-        protocolo que especifica su versión en las comunicaciones. Aun se
-        utiliza, sobre todo en servidores proxy. 
-        \item[HTTP/1.1] (junio de 1999) Versión actual, las conexiones
-        persistentes están activadas por defecto (\textit{Keep-Alive}) y funcionan bien con los
-        proxies. 
-    \end{description}
-\end{frame}
+    \includegraphics[scale=0.65]{images/2-3.png}
+    \caption{Diagrama de la red MAY - Cliente - Servidor }
+    \label{MAY-3}
 
-\subsection{Métodos HTTP} % (fold)
-
-% subsection Métodos HTTP (end)
-
-\begin{frame}[fragile, allowframebreaks]{Métodos HTTP} % (fold)
-    HTTP define 8 métodos (algunas veces referido como "verbos") que indica la acción que desea que se efectúe sobre el recurso identificado.
-
-    \begin{description}
-        \item[HEAD] 
-        Pide una respuesta idéntica a la que correspondería a una petición GET, pero sin el cuerpo de la respuesta. Esto es útil para la recuperación de meta-información escrita en los encabezados de respuesta, sin tener que transportar todo el contenido.
-        \item[GET]
-        Pide una representación del recurso especificado.
-        \begin{verbatim}
-$ telnet www.google.co.ve 80
-
-GET /images/srpr/logo3w.png HTTP/1.0
-
-        \end{verbatim}
-        \item[POST] Indica al servidor que se prepare para recibir información del cliente. Suele usarse para enviar información desde formularios.
-        \item[PUT] Sube, carga o realiza un upload de un recurso especificado (archivo), es el camino más eficiente para subir archivos a un servidor, esto es porque en POST utiliza un mensaje multiparte y el mensaje es decodificado por el servidor. En contraste, el método PUT te permite escribir un archivo en una conexión socket establecida con el servidor.
-        \item[DELETE] Borra el recurso especificado, solo si esta disponible el
-        método para el recurso.
-        \item[TRACE] Este método solicita al servidor que envíe de vuelta en un
-        mensaje de respuesta, en la sección del cuerpo de entidad, toda la data
-        que reciba del mensaje de solicitud. Se utiliza con fines de comprobación y diagnostico.
-        \item[OPTIONS] Devuelve los métodos HTTP que el servidor soporta para un URL especifico.Esto puede ser utilizado para comprobar la funcionalidad de un servidor web mediante petición en lugar de un recurso especifico
-        \item[CONNECT] Este método se reserva para uso con proxys. Permitirá que un proxy pueda dinámicamente convertirse en un túnel. Por ejemplo para comunicaciones con SSL.
-    \end{description}
+    \end{center}
+    \end{figure}
 
 \end{frame}
 
-\begin{frame}{El método HEAD} % (fold)
+\begin{frame}[allowframebreaks,fragile]{Cuando un computador se conecta por primera vez a la red
+MAY} % (fold)
 
-Es un método utilizado para preguntar información sobre un documento
-(metadatos), no para obtener el propio documento. HEAD es mucho más rápido que
-GET, ya que se transfiere mucha menos información. Es generalmente usada por
-clientes que usan caché para ver si el documento ha cambiado desde la última
-vez que accedieron a él. Si no cambió, la copia local puede usarse nuevamente;
-de otra forma, la versión actualizada debe recuperarse con GET.  \\[0.5cm]
+    Cuando \textit{desktop1} se conecta por primera vez a la red MAY, necesita
+    contactar al servidor DHCP para obtener una dirección IP y otros parámetros
+    de configuración. Para ubicar un servidor DHCP, \textit{desktop1} envía un
+    mensaje broadcast \textit{desktop1} para ubicar potenciales servidores
+    DHCP en la red MAY.\\[0.2cm]
 
-Este método puede ser usado para testear la validez, accesibilidad y reciente modificación de enlaces, sin tener que descargar los documentos en sí. 
+    Luego \textit{dhcpserve} recibe este \textit{broadcast} y responde a
+    \textit{desktop1} identificándose como un servidor DHCP. Como
+    \textit{desktop1} y \textit{dhcpserve} están en distintos segmentos de red,
+    el router actuando como \textit{relay agent}, reenvia los mensajes entre
+    ambos computadores. En diapositivas posteriores, se explicará esto con
+    detalle.\\[0.2cm]
 
-\end{frame}
-
-\begin{frame}{El método POST} % (fold)
-Es usado para transferir datos del cliente al servidor. Los datos del cuerpo de
-la solicitud se enviarán al URI especificado. Este URI será una referencia a un
-manipulador que procesará los datos de alguna forma, típicamente será un
-programa CGI. \\[0.5cm]
-
-Las respuestas al método POST no serán guardadas en caché salvo que en la propia respuesta se incluyan encabezados de control de caché adecuados.
-\end{frame}
-
-% subsection Versiones (end)
-
-\subsection{Probar los métodos} % (fold)
-
-\begin{frame}[fragile]{Probar los métodos} % (fold)
-    La manera más didáctica para observar la estructura de las peticiones y el
-    uso de los métodos, es con \textit{CouchDB}\\[0.5cm]
-
-    Por favor instale \textit{couchdb}, en el sistema operativo Debian
-    GNU/Linux se hace de la siguiente manera: 
-
-    \begin{verbatim}
-# aptitude install couchdb
-    \end{verbatim}
-
-    Vamos a utilizar \textit{Firefox} con la extensión de \textit{Firebug}
-    instalada y accedemos a la dirección
-    \url{http://localhost:5984/\_utils/}
+    Después de \textit{dhcpserve} recibir el mensaje inicial de
+    \textit{desktop1}, \textit{dhcpserve} selecciona una dirección IP que es
+    adecuada para la red 192.168.12.0 a la que \textit{desktop1} está
+    conectada. Además otros parámetros de configuración son enviados, como por
+    ejemplo: la máscara de red, la dirección de la interfaz de red del router
+    en la red 192.168.12.0 y la dirección del servidor DNS en la red
+    MAY.\\[0.2cm]
 
 \end{frame}
 
 
-% subsection Probar los métodos (end)
+\begin{frame}[fragile]{Cuando un computador se reinicia} 
 
-% subsection Transacciones HTTP (end)
-
-\subsection{Respuestas HTTP, códigos de estado} % (fold)
-
-\begin{frame}[fragile]{Respuestas HTTP,  códigos de estado} % (fold)
-    La sintaxis de una respuesta HTTP es, en su formato más básico una línea de estado y tiene una sintaxis como la siguiente:
-
-    \begin{verbatim}
-versión  código-error  texto-explicativo        
-    \end{verbatim}
-    Incluye la versión de protocolo, un código de éxito o error y el texto explicativo al código anterior. Un ejemplo bastante común es:
-    \begin{verbatim}
-HTTP/1.1 200 Ok
-    \end{verbatim}
-    Los posibles códigos de estado se identifican con números de tres cifras y se clasifican en cinco grupos:
-    \begin{itemize}
-		\item Números del estilo \textbf{1XX} que representan mensajes de tipo informativo.
-		\item Números del estilo \textbf{2XX} que indican que se completó satisfactoriamente la solicitud del cliente.
-		\item Números del estilo \textbf{3XX} que indican que la solicitud fue redirigida.
-		\item Números del estilo \textbf{4XX} que indican un error en la solicitud del cliente.
-		\item Números del estilo \textbf{5XX} que indican un error en el lado del servidor.
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Códigos típicos de estado HTTP} % (fold)
-
-\begin{description}
-   
-\item[200 OK]	La solicitud del cliente fue satisfactoria y el servidor ha devuelto la información solicitada.
-\item[204 No Content]	El cuerpo de la respuesta no tiene contenido. Esto puede indicar, por ejemplo, un problema con un CGI que no devuelve datos.
-\item[301 Moved Permanently]	El URI solicitado no está disponible en el servidor. Ha sido movido a otra ubicación. Las solicitudes futuras deberán hacerse a esa ubicación.
-\item[400 Bad Request]	Hay un error de sintaxis en la solicitud del cliente. Por ejemplo mandar una solicitud indicando que el cliente soporta HTTP/1.1 y no enviar el encabezado de Host.
-\item[404 Not Found]	Este es junto con el 200 OK, el código más habitual. Indica que el documento solicitado no está disponible, probablemente el URI haya sido mal escrito.
-\item[500 Internal Server Error]	Este mensaje indica que algo ha ido mal en el servidor, casi siempre tiene que ver con problemas en programas CGI.
-
-\end{description}
+    Lorem Ipsum
 
 \end{frame}
 
-% subsection Respuestas HTTP, códigos de estado (end)
+
+\begin{frame}[fragile]{Cuando un computador cambia de sitio dentro de
+la red MAY} 
+
+    Lorem Ipsum
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Cuando un computador es eliminado de la red MAY}
+
+    Lorem Ipsum
+
+\end{frame}
 
 \end{document}
