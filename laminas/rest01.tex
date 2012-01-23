@@ -36,8 +36,8 @@
     El protocolo DHCP esta diseñado para satisfacer la demanda de operaciones
     donde es necesario automatizar la configuración de computadores en red. \\[0.2cm]
 
-    La máquina que efectua la petición se le conoce como \textit{Cliente} y
-    existen implementaciones de el programa cliente en practicamente cualquier
+    La máquina que efectúa la petición se le conoce como \textit{Cliente} y
+    existen implementaciones de el programa cliente en prácticamente cualquier
     plataforma de hardware y sistema operativo. \\[0.2cm]
 
     La información transmitida entre cliente y servidor son paquetes no
@@ -95,7 +95,7 @@
     información que identifica a los clientes DHCP. Dicho listado permite
     diferenciar a cada uno de los clientes. Para cada identificador, se
     establece una dirección IP que debe ser asignada a dicho cliente.
-    Si el cliente es móvil, debe haber una direccción para dicho
+    Si el cliente es móvil, debe haber una dirección para dicho
     dispositivo en cada rango de la red. \\[0.2cm]
 
     \textbf{Asignación dinámica:} el servidor recibe un rango de direcciones
@@ -113,11 +113,11 @@
     \textbf{Asignación híbrida:} existen una variedad de métodos híbridos que
     son posibles con DHCP. Por ejemplo una estrategia común es asignar
     direcciones fijas a los clientes DHCP registrados, permitiendo que los
-    clients DHCP no registrados adquieran direcciones IP asignadas de manera
+    cliente DHCP no registrados adquieran direcciones IP asignadas de manera
     dinámica.\\[0.2cm]
 
     Cual de estas estrategias ha de utilizarse en una red en particular, es una
-    decision que queda de parte del administrador. Obviamente, mantener un
+    decisión que queda de parte del administrador. Obviamente, mantener un
     registro de todos los clientes DHCP conectados en una red es una carga de
     trabajo considerable que en algunos entornos vale la pena.\\[0.2cm]
 
@@ -151,7 +151,7 @@
 
     Al restringir los clientes a usar direcciones IP, solo hasta que expiren
     los \textit{leases} y al proveer un mecanismo para que actualicen los
-    \textit{leases} mientras esten activos y conectados a la red, DHCP permite
+    \textit{leases} mientras estén activos y conectados a la red, DHCP permite
     'reclamar' las direcciones IP que no están en uso. Si un dispositivo esta
     apagado por un periodo extendido de tiempo, debe contactar al servidor DHCP
     y solicitar una dirección cuando se activa. Si la dirección anterior no
@@ -163,7 +163,7 @@
 \begin{frame}{Liberación (release)} % (fold)
 
     Un cliente puede renunciar a su \textit{lease} sobre una dirección, antes
-    de su expiración, por ejemplo cuando una máquina va a moverse de una red a
+    de que expire, por ejemplo cuando una máquina va a moverse de una red a
     otra, de manera que el servidor sepa que la dirección queda disponible
     inmediatamente para ser reasignada. Algunos clientes DHCP pueden
     configurarse para renunciar a su dirección cada vez que la máquina se
@@ -267,34 +267,153 @@ MAY} % (fold)
     detalle.\\[0.2cm]
 
     Después de \textit{dhcpserve} recibir el mensaje inicial de
-    \textit{desktop1}, \textit{dhcpserve} selecciona una dirección IP que es
-    adecuada para la red 192.168.12.0 a la que \textit{desktop1} está
-    conectada. Además otros parámetros de configuración son enviados, como por
+    \textit{desktop1}, \textit{dhcpserve} selecciona una dirección IP
+    (192.168.12.25) que es adecuada para la red 192.168.12.0 a la que \textit{desktop1} está
+    conectada. Otros parámetros de configuración son enviados adicionalmente, como por
     ejemplo: la máscara de red, la dirección de la interfaz de red del router
     en la red 192.168.12.0 y la dirección del servidor DNS en la red
     MAY.\\[0.2cm]
 
+    \textit{dhcpserve} usa las reglas de configuración del cliente, definidas
+    por el administrador de la red y la información enviada por el
+    \textit{relay agent} para determinar dichos parámetros. Luego responde con
+    un mensaje de 'oferta' que contiene la dirección seleccionada y los
+    parámetros a \textit{desktop1}.\\[0.2cm]
+
+    Despues de \textit{desktop1} recibir el mensaje de 'oferta' de
+    \textit{dhcpserve}, envía un mensaje en forma de \textit{broadcast}
+    solicitando la dirección IP que le ha sido ofrecida. Así el servidor
+    \textit{dhcpserve} confirma que la dirección está aún disponible y envía
+    los parámetros a \textit{desktop1}.\\[0.2cm]
+
+    Cuando el mensaje llega, el software cliente DHCP extrae los parámetros de
+    configuración y configura el stack IP del computador con la información
+    recibida, tan pronto el IP stack está configurado, se puede usar la red
+    normalmente. Igualmente el software guarda dichos valores de configuración
+    para su uso posterior, en un archivo en \textit{desktop1}.\\[0,2cm]
+
 \end{frame}
 
 
-\begin{frame}[fragile]{Cuando un computador se reinicia} 
+\begin{frame}[allowframebreaks,fragile]{Cuando un computador se reinicia} 
 
-    Lorem Ipsum
+    Cuando \textit{desktop1} es reiniciado o encendido al inicio de la jornada,
+    se leen los valores de configuración que fueron recibidos y guardados la
+    última vez y se intenta contactar a \textit{dhcpserve} para confirmar si
+    dicha configuración puede ser usada aún.\\[0,2cm]
+    
+    En caso de que \textit{desktop1} no reciba una respuesta de
+    \textit{dhcpserve} y el \textit{lease} de su dirección previa no haya
+    expirado, asume que se encuentra aún en el mismo segmento de red y sigue
+    usando la IP 192.168.12.25, con el resto de valores asignados previamente
+    por \textit{dhcpserve}.\\[0.2cm]
+
+    En caso de que \textit{desktop1} se haya movido a otro segmento de red, debe
+    solicitar un IP nuevo.\\[0.2cm]
 
 \end{frame}
 
 
-\begin{frame}[fragile]{Cuando un computador cambia de sitio dentro de
-la red MAY} 
+\begin{frame}[allowframebreaks,fragile]{Cuando un computador cambia de
+ubicación dentro de la red MAY} 
 
-    Lorem Ipsum
+    Ahora consideremos lo que sucede cuando \textit{desktop1} se mueva a un
+    nuevo segmento de red. Cuando \textit{desktop1} se activa en una nueva
+    ubicación, envía una solicitud de confirmación con la IP que usaba
+    anteriormente y \textit{dhcpserve} determina que dicha dirección no es
+    válida para ser usada en el nuevo segmento de red. Por ejemplo, si
+    \textit{desktop1} se mueve al segmento 192.168.13.0, así:
+
+    \begin{figure}
+    \begin{center}
+
+    \includegraphics[scale=0.50]{images/2-4.png}
+%    \caption{Diagrama - \textit{desktop1} conectada la red 192.168.13.0}
+    \label{MAY-4}
+
+    \end{center}
+    \end{figure}
+
+    \framebreak
+    
+    ¿Cómo deduce \textit{dhcpserve} la red de donde proviene el mensaje de
+    \textit{desktop1}? Dos maneras posibles:
+
+    \begin{itemize}
+        \item Si \textit{desktop1} está en la misma red, el campo 'gateway
+        address' debe tener un valor de 0.0.0.0
+        \item Si \textit{desktop1} y \textit{dhcpserve} están en segmentos de
+        red distintos, entonces un 'relay agent' debe reenviar ese primer
+        mensaje y en el proceso añade la dirección de la interfaz por donde
+        lo recibió, al campo 'gateway address' de dicho mensaje
+    \end{itemize}
+
+    Así \textit{dhcpserve} logra determinar que el mensaje viene de la red
+    192.168.13.0, por lo tanto 192.168.12.25 no es una dirección válida.
+    Entonces \textit{dhcpserve} envía una respuesta a \textit{desktop1},
+    negándole el uso de dicha dirección. Al \textit{desktop1} recibir el
+    mensaje, entonces realiza una petición por nueva IP como en el proceso
+    'Cuando un computador se conecta por primera vez a la red'.\\[0.2cm]
 
 \end{frame}
-
 
 \begin{frame}[fragile]{Cuando un computador es eliminado de la red MAY}
 
-    Lorem Ipsum
+   A medida que más computadores se añaden a la sub red 192.168.13.0,
+   \textit{dhcpserve} asigna más direcciones a estos nuevos computadores.
+   Recordemos que 192.168.13.0 es una dirección de red clase C que solo tiene
+   254 direcciones disponibles, eventualmente \textit{dhcpserve} no tendrá
+   direcciones para asignar.\\[0.2cm]
+
+   Para evitar eso, \textit{dhcpserve} establece un tiempo de \textit{lease}
+   para las direcciones que asigna. Después de que dicho \textit{lease} ha
+   expirado, \textit{dhcpserve} 'reclama' dichas direcciones para ser
+   reutilizadas por otros clientes DHCP.\\[0.2cm]
+
+   Recordemos que DHCP es un protocolo \textit{Stateless} y por lo tanto no
+   diferenciará entre una máquina que se apagó y una máquina que fue removida
+   de la red permanentemente.\\[0.2cm]
+
+\end{frame}
+
+\subsection{Instalando y configurando el DHCP de la ISC} % (fold)
+\label{sub:Instalando y configurando el DHCP de la ISC}
+
+% subsection Instalando y configurando el DHCP de la ISC (end)
+
+\begin{frame}[allowframebreaks,fragile]{Instalando el paquete en Debian}
+
+    La mayoría de las distribuciones Linux, posee un sistema de paquetes para
+    la instalación de aplicaciones y datos asociados a estas. En el caso de
+    Debian, el manejo de paquetes se realiza con apt y sus herramientas
+    relacionadas.\\[0.2cm]
+
+    En nuestro caso trabajaremos con máquinas virtuales hospedadas en el
+    servidor con el IP proveído por el instructor. Dos máquinas virtuales para
+    cada participante, una que actuará como servidor y otra como
+    cliente. Cada par de máquinas esta conectada entre sí por un
+    \textit{bridge virtual} que les permite intercambiar paquetes entre ellas
+    sin contaminar con \textit{broadcast} al resto de las máquinas virtuales de
+    los demás participantes\\[0.2cm] 
+
+    Para conectarse al servidor donde están hospedadas las máquinas virtuales,
+    es preciso usar el comando:
+
+\begin{verbatim}
+
+    ssh root@161.196.33.115
+
+\end{verbatim} 
+
+    Dependiendo de la ubicación en el laboratorio, se hará la asignación de
+    máquinas, todas pueden ser visualizadas con el comando
+
+\begin{verbatim}
+
+    vzlist
+
+\end{verbatim} 
+
 
 \end{frame}
 

@@ -1,2 +1,32 @@
-\frametitle {Cuando un computador es eliminado de la red MAY}\par     Lorem Ipsum
+\frametitle {Instalando el paquete en Debian}\par     La mayoría de las distribuciones Linux, posee un sistema de paquetes para
+    la instalación de aplicaciones y datos asociados a estas. En el caso de
+    Debian, el manejo de paquetes se realiza con apt y sus herramientas
+    relacionadas.\\[0.2cm]
+
+    En nuestro caso trabajaremos con máquinas virtuales hospedadas en el
+    servidor con el IP proveído por el instructor. Dos máquinas virtuales para
+    cada participante, una que actuará como servidor y otra como
+    cliente. Cada par de máquinas esta conectada entre sí por un
+    \textit{bridge virtual} que les permite intercambiar paquetes entre ellas
+    sin contaminar con \textit{broadcast} al resto de las máquinas virtuales de
+    los demás participantes\\[0.2cm]
+
+    Para conectarse al servidor donde están hospedadas las máquinas virtuales,
+    es preciso usar el comando:
+
+\begin{verbatim}
+
+    ssh root@161.196.33.115
+
+\end{verbatim}
+
+    Dependiendo de la ubicación en el laboratorio, se hará la asignación de
+    máquinas, todas pueden ser visualizadas con el comando
+
+\begin{verbatim}
+
+    vzlist
+
+\end{verbatim}
+
 

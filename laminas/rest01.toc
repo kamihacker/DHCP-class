@@ -5,3 +5,4 @@
 \beamer@subsectionintoc {1}{2}{Asignaci\IeC {\'o}n de direcciones}{7}{0}{1}
 \beamer@subsectionintoc {1}{3}{Funciones principales del DHCP}{9}{0}{1}
 \beamer@subsectionintoc {1}{4}{Ejemplo inicial de funcionamiento}{13}{0}{1}
+\beamer@subsectionintoc {1}{5}{Instalando y configurando el DHCP de la ISC}{26}{0}{1}
