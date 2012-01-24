@@ -17,6 +17,158 @@
     \tableofcontents
 \end{frame}
 
+\section{Linux en nuestro entorno de pruebas} % (fold)
+
+\subsection{Usando el entorno de pruebas} % (fold)
+
+\begin{frame}[allowframebreaks,fragile]{Accediendo al entorno de pruebas}
+
+    En nuestro caso trabajaremos con máquinas virtuales hospedadas en el
+    servidor con el IP proveído por el instructor. Dos máquinas virtuales para
+    cada participante, una que actuará como servidor y otra como
+    cliente. Cada par de máquinas esta conectada entre sí por un
+    \textit{bridge virtual} que les permite intercambiar paquetes entre ellas
+    sin contaminar con \textit{broadcast} al resto de las máquinas virtuales de
+    los demás participantes\\[0.2cm] 
+
+    Para conectarse al servidor donde están hospedadas las máquinas virtuales,
+    es preciso usar el comando:\\[0.2cm]
+
+\begin{verbatim}
+    ssh root@161.196.33.115
+\end{verbatim} 
+
+    \framebreak
+
+    Dependiendo de la ubicación de los participantes en el
+    laboratorio, se hará la asignación de máquinas en pares,
+    todas pueden ser visualizadas con el comando:\\[0.2cm]
+
+\begin{verbatim}
+    vzlist
+\end{verbatim} 
+     
+    Las máquinas listadas se encuentran diferenciadas por el identificador
+    'CTID' en los campos del tope de la lista.  Cada participante tiene
+    asignadas dos máquinas, una en la serie 31x y una en la serie 32x.
+    Las máquinas de la serie 31x están destinadas a ser máquina servidor
+    y las máquinas de la serie 32x están diseñadas como máquina cliente.\\[0.2cm]
+
+    El comando usado para acceder a las máquinas virtuales, es el siguiente:
+
+\begin{verbatim}
+    vzctl enter [CTID]
+\end{verbatim}
+
+    Esto le ubicará dentro de la máquina virtual indicada por 'CTID'.
+    Si desea saber en que host esta la sesión actual, puede usar el
+    comando:\\[0.2cm]
+
+\begin{verbatim}
+    uname -a
+\end{verbatim}
+
+    Cada una describe si es máquina cliente o servidor en su hostname.
+    
+\end{frame}
+
+\subsection{Comandos básicos} % (fold)
+
+\begin{frame}[allowframebreaks,fragile]{Comandos básicos requeridos} 
+
+    Los ejercicios de este curso requerirán el uso básico de los siguientes
+    comandos:
+
+    \begin{verbatim}
+    man : despliega la hoja de manual de un comando
+    cd : cambia el directorio actual
+    nano / vim : editores de texto en línea de comando
+    ls : lista archivos y directorios
+    sort :  ordena alfabética o numéricamente un conjunto de líneas
+    cut : selecciona campos de un archivo o salida
+    uniq : elimina las lineas repetidas adyacentes
+    grep : busca/filtra una cadena en un archivo o salida
+    tail : muestra la parte final de un archivo o salida
+    head : muestra la parte superior de un archivo o salida
+    wc : cuenta la cantidad de líneas, palabras o caracteres
+    \end{verbatim}
+
+    \framebreak
+
+    Tome en cuenta que la salida de un comando, puede ser la entrada de otro,
+    comunicándolos con un caracter 'pipe' entre ellos, por ejemplo:
+
+    \begin{verbatim}
+    grep DHCP dhcpd.log | wc -l
+    \end{verbatim}
+
+    Se encarga de contar todas las coincidencias de la cadena DHCP en el
+    archivo dhcp.log
+
+    Usando el comando 'man' se puede leer el manual de cada uno de los otros
+    comandos y así tener una referencia sobre que switches y opciones están
+    disponibles en cada uno, cada manual es autocontenido. Para leer el manual
+    del comando wc, se necesitaría tipear:
+
+    \begin{verbatim}
+    man wc
+    \end{verbatim} 
+
+\end{frame}
+
+\begin{frame}
+
+    Pongámonos a prueba con las siguientes prácticas, para aprender o recordar
+    lo que necesitaremos en lo sucesivo. Si usted es capaz de resolver estos
+    ejercicios en una sola línea, sin leer páginas de manual, puede
+    saltarse esta sección de introducción. \\[0.2cm]
+
+    \begin{itemize}
+        \item Contar la cantidad de directorios que tiene la raíz del sistema
+        de archivos
+        \item Contar la cantidad de líneas que contienen la palabra 'kernel' en
+        /var/log/syslog
+        \item Extraer las direcciones IP configuradas en la máquina local (sin
+        espacios o caracteres adicionales) (tip: comando /sbin/ifconfig)
+        \item Extraer las líneas que contienen la palabra error (sin prestar
+        atención a mayúsculas o minúsculas) del comando dmesg
+        \item Contar la cantidad de líneas con DHCPDISCOVER que tiene el
+        archivo dhcp.log para el día 20 de Diciembre
+        \item Emitir una lista de todos los mensajes de tipo DHCP registrados
+        en el archivo dhcp.log y que cantidad de cada uno existen allí
+    \end{itemize}
+    
+\end{frame}
+
+\subsection{Instalación de aplicaciones} % (fold)
+
+\begin{frame}[allowframebreaks,fragile]{Instalación de paquetes}
+
+    La mayoría de las distribuciones Linux, posee un sistema de paquetes para
+    la instalación de aplicaciones y sus datos. En el caso de Debian, el
+    manejo de paquetes se realiza con apt y sus herramientas relacionadas.\\[0.2cm]
+
+    En nuestro caso usaremos de manera limitada el sistema de paquetes, ya que
+    nuestras máquinas virtuales no están conectadas la Internet, ni tienen
+    disponible un repositorio de paquetes. Solo instalaremos el paquete con el
+    comando:\\[0.2cm]
+
+\begin{verbatim} 
+    dpkg -i [nombre del archivo del paquete]
+\end{verbatim}
+
+    Con acceso normal a un repositorio, dicha operación debería realizarse con los
+    comandos:\\[0.2cm]
+
+\begin{verbatim} 
+    apt-get update # para actualizar la base de datos de paquetes
+    apt-get install isc-dhcp-server # instala el servidor DHCP del ISC
+\end{verbatim}
+
+
+\end{frame}
+
+
 \section{Introducción a DHCP}
 
 \subsection{Fundamentos de DHCP} % (fold)
@@ -88,7 +240,6 @@
 \end{frame} 
 
 \subsection{Asignación de direcciones} % (fold)
-
 
 \begin{frame}[allowframebreaks,fragile]{Tipos de asignación} % (fold)
     \textbf{Asignación estática:} el servidor recibe una listado con
@@ -179,6 +330,9 @@
    \begin{itemize}
        \item Dirección del router por omisión
        \item Dirección(es) de servidor(es) DNS
+       \item FQDN al que debe pertenecer la máquina
+       \item Nombre del servidor NTP para sincronizar la hora
+       \item Nombre del servidor para descargarse una imagen boot por TFTP
        \item Nombre del archivo para hacer boot de una máquina (para dispositivos que inician
        cargando archivos desde un dispositivo de almacenamiento disponible en
        la red)
@@ -376,72 +530,102 @@ ubicación dentro de la red MAY}
 
 \end{frame}
 
-\subsection{Instalando y configurando el DHCP de la ISC} % (fold)
-\label{sub:Instalando y configurando el DHCP de la ISC}
+\section{Configurando el servidor DHCP} % (fold)
+\label{sec:Configurando el servidor DHCP}
 
-% subsection Instalando y configurando el DHCP de la ISC (end)
+% section Configurando el servidor DHCP (end)
 
-\begin{frame}[allowframebreaks,fragile]{Instalando el paquete en Debian}
+\subsection{Especificando la arquitectura de la red} % (fold)
+\label{sub:Especificando la arquitectura de la red}
 
-    La mayoría de las distribuciones Linux, posee un sistema de paquetes para
-    la instalación de aplicaciones y datos asociados a estas. En el caso de
-    Debian, el manejo de paquetes se realiza con apt y sus herramientas
-    relacionadas.\\[0.2cm]
+% subsection Especificando la arquitectura de la red (end)
 
-    En nuestro caso trabajaremos con máquinas virtuales hospedadas en el
-    servidor con el IP proveído por el instructor. Dos máquinas virtuales para
-    cada participante, una que actuará como servidor y otra como
-    cliente. Cada par de máquinas esta conectada entre sí por un
-    \textit{bridge virtual} que les permite intercambiar paquetes entre ellas
-    sin contaminar con \textit{broadcast} al resto de las máquinas virtuales de
-    los demás participantes\\[0.2cm] 
-
-    Para conectarse al servidor donde están hospedadas las máquinas virtuales,
-    es preciso usar el comando:
-
-\begin{verbatim}
-
-    ssh root@161.196.33.115
-
-\end{verbatim} 
-
-    Dependiendo de la ubicación de los participantes en el
-    laboratorio, se hará la asignación de máquinas en pares,
-    todas pueden ser visualizadas con el comando:\\[0.2cm]
-
-\begin{verbatim}
-
-    vzlist
-
-\end{verbatim} 
-     
-    Las máquinas listadas se encuentran diferenciadas por el identificador
-    'CTID' en los campos del tope de la lista.  Cada participante tiene
-    asignadas dos máquinas, una en la serie 31x y una en la serie 32x.
-    Las máquinas de la serie 31x están destinadas a ser máquina servidor
-    y las máquinas de la serie 32x están diseñadas como máquina cliente.\\[0.2cm]
-
-    El comando usado para acceder a las máquinas virtuales, es el siguiente:
-
-\begin{verbatim}
-
-    vzctl enter [CTID]
-
-\end{verbatim}
-
-    Esto le ubicará dentro de la máquina virtual indicada por 'CTID'.
-    Si desea saber en que host esta la sesión actual, puede usar el
-    comando:\\[0.2cm]
-
-\begin{verbatim}
-
-    uname -a
+\begin{frame}[allowframebreaks,fragile]{Declaraciones de sub-redes} 
     
-\end{verbatim}
+    El arquitecto de la red debe describir la arquitectura de la red, al
+    servidor DHCP identificando cada una de los IP de las sub-redes, las
+    direcciones y las máscaras de red para cada una de las sub-redes.\\[0.2cm]
 
-    Cada máquina tiene establecido si es una máquina cliente o servidor en su
-    hostname.
+    Usando dicha información, el servidor DHCP asocia la información que
+    recibe, selecciona las IPs apropiadas para asignar a un cliente o
+    determina, si un cliente DHCP se ha movido a una nueva
+    sub-red.\\[0.2cm]
+
+
+    \begin{verbatim}
+    subnet subnet-address netmask subnet-mask {
+        subnet declarations
+    }
+    \end{verbatim}
+    
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]{Declaración de la asignación a una
+sub-red}
+    
+   Lorem ipsum 
+    
+\end{frame}
+
+\subsection{Parámetros de configuración requeridos} % (fold)
+
+% subsection Parámetros de configuración requeridos (end)
+
+\begin{frame}[allowframebreaks,fragile]{Opciones de configuración}
+
+    Lorem ipsum
+    
+\end{frame}
+
+\subsection{Especificando leases} % (fold)
+\label{sub:Especificando leases}
+
+% subsection Especificando leases (end)
+
+\begin{frame}[allowframebreaks,fragile]{Duración de los leases}
+
+    Lorem ipsum
+    
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]{Leases en la red MAY}
+
+    Lorem ipsum
+    
+\end{frame}
+
+\subsection{Otras opciones de DHCP} % (fold)
+\label{sub:Otras opciones de DHCP}
+
+% subsection Otras opciones de DHCP (end)
+
+\begin{frame}[allowframebreaks,fragile]{Opciones de sub-red}
+
+    Lorem ipsum
+    
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]{Opciones que son valores globales}
+
+    Lorem ipsum
+    
+\end{frame}
+
+\subsection{Extendiendo un lease} % (fold)
+\label{sub:Extendiendo un lease}
+
+% subsection Extendiendo un lease (end)
+
+\begin{frame}[allowframebreaks,fragile]{Extendiendo un lease en la red MAY} 
+
+    Lorem ipsum
+    
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]{Otra información de configuración}
+    
+
 
 \end{frame}
-    
+
 \end{document}
