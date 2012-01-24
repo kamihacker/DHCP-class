@@ -551,20 +551,113 @@ ubicación dentro de la red MAY}
     determina, si un cliente DHCP se ha movido a una nueva
     sub-red.\\[0.2cm]
 
-
     \begin{verbatim}
-    subnet subnet-address netmask subnet-mask {
-        subnet declarations
+    subnet dirección-de-subred netmask máscara-de-red {
+        declaraciones de la subred
     }
     \end{verbatim}
+
+    En esta declaración arriba, 'dirección-de-subred' equivale al IP de la
+    sub-red y 'máscara-de-red' a la máscara de sub-red que es necesario usar en
+    dicha sub-red. Ambos deben estar escritos en notación decimal.\\[0.2cm]
+
+    Recordemos la figura de las sub-redes de la red MAY:
+
+    \begin{figure}
+    \begin{center}
+
+    \includegraphics[scale=0.65]{images/2-2.png}
+    \caption{Diagrama de sub-redes de la red  MAY} 
+    \label{MAY-4}
+
+    \end{center}
+    \end{figure}
+
+    Dicha arquitectura de red, se representaría de la siguiente manera:
+    \begin{verbatim}
+    # subnet de servidores
+        subnet 192.168.11.0 netmask 255.255.255.0 {
+    }
+    # subnet 1 para escritorios
+        subnet 192.168.12.0 netmask 255.255.255.0 {
+    }
+    # subnet 2 para escritorios
+        subnet 192.168.13.0 netmask 255.255.255.0 {
+    }
+    # subnet 3 para escritorios
+        subnet 192.168.14.0 netmask 255.255.255.0 {
+    }
+    # subnet 4 para escritorios
+        subnet 192.168.15.0 netmask 255.255.255.0 {
+    }
+    \end{verbatim}
+   
+    \framebreak
     
+    \textbf{Ejercicio:}\\[0.2cm]
+
+    Procedamos a realizar en la máquina virtual 'server' la configuración de la
+    sub-red respectiva para nuestro par de máquinas asignadas.
+
 \end{frame}
 
-\begin{frame}[allowframebreaks,fragile]{Declaración de la asignación a una
+\begin{frame}[allowframebreaks,fragile]{Declaración de rangos de asignación a una
 sub-red}
     
-   Lorem ipsum 
-    
+    Adicional a la definición de sub-redes, el arquitecto de la red debe
+    definir los rangos de direcciones dentro de cada sub-red o 'scopes', que
+    están disponibles para asignación en dicho servidor DHCP.\\[0.2cm]
+
+    Es importante resaltar que las direcciones asignadas de manera fija por
+    cualquier otro mecanismo (manual por ejemplo) deben ser excluidas de los
+    rangos definidos como usables para asignación automática o
+    dinámica.\\[0.2cm]
+
+    El bloque \textit{range}, se define de la siguiente manera:
+
+    \begin{verbatim}
+    range primera-dirección-disponible última-dirección-disponible;
+    \end{verbatim}
+
+    Para el ejemplo de la red MAY, tendríamos un bloque como este:
+
+    \begin{verbatim}
+    # Server subnet
+    subnet 192.168.11.0 netmask 255.255.255.0 {
+        range 192.168.11.1 192.168.11.251;
+        # 192.168.11.252 reservada para el DHCP 
+        # 192.168.11.253 reservada para el DNS 
+        # 192.168.11.254 reservada para el router 
+    }
+    # Staff subnet 1
+    subnet 192.168.12.0 netmask 255.255.255.0 {
+        range 192.168.12.1 192.168.12.253;
+        # 192.168.12.254 reservada para el router 
+    }
+    # Staff subnet 2
+    subnet 192.168.13.0 netmask 255.255.255.0 {
+        range 192.168.13.1 192.168.13.253;
+        # 192.168.13.254 reservada para el router 
+    }
+    # Staff subnet 3
+    subnet 192.168.14.0 netmask 255.255.255.0 {
+        range 192.168.14.1 192.168.14.253;
+        # 192.168.14.254 reservada para el router 
+    }
+    # Staff subnet 4
+    subnet 192.168.15.0 netmask 255.255.255.0 {
+        range 192.168.15.1 192.168.15.253;
+        # 192.168.15.254 reservada para el router 
+    }
+    \end{verbatim}
+
+    \framebreak
+
+    \textbf{Ejercicio:}\\[0.2cm]
+
+    Procedamos a escribir el respectivo bloque de configuración para el caso
+    disponible en nuestro laboratorio.
+
 \end{frame}
 
 \subsection{Parámetros de configuración requeridos} % (fold)
@@ -573,8 +666,120 @@ sub-red}
 
 \begin{frame}[allowframebreaks,fragile]{Opciones de configuración}
 
-    Lorem ipsum
+    DHCP es capaz de proveer otros valores de configuración aparte de la
+    dirección IP. De hecho varios parámetros adicionales son necesarios, para
+    que un dispositivo pueda comunicarse por TCP/IP con otros dispositivos.
+    Dichos parámetros mínimos son:\\[0.2cm]
+
+    \begin{itemize}
+        \item La máscara de sub-red
+        \item La dirección de al menos un router en la sub-red
+        \item La dirección de un servidor DNS
+    \end{itemize}
+
+    Estos parámetros se configuran a través de la palabra clave 'option' y
+    algunas de las opciones más usadas las estaremos viendo más adelante, su
+    sintaxis general es la siguiente:\\[0.2cm]
+
+    \begin{verbatim}
+    option nombre-de-la-opción valor-de-la-opción;
+    \end{verbatim}
+
+    Si la declaración 'option' aparece dentro de una declaración de sub-red,
+    dichos valores serán aplicados a cualquier cliente en la sub-red. En el 
+    siguiente ejemplo se usaría una declaración de 'option' para enviar a todos
+    los clientes DHCP de la red 192.168.11.0, el router por omisión
+    192.168.11.254 
+     
+    \begin{verbatim}
+    # Server subnet
+    subnet 192.168.11.0 netmask 255.255.255.0 {
+        range 192.168.11.1 192.168.11.251;
+        # 192.168.11.252 reservada para el DHCP 
+        # 192.168.11.253 reservada para el DNS 
+        # 192.168.11.254 reservada para el router 
+        option routers 192.168.11.254;
+    }
+    \end{verbatim}
+
+    \framebreak
+
+    \textbf{Ejercicio:}
+    Configure el router por omisión en el bloque de configuración respectivo
+    para el ambiente de pruebas disponible, asegúrese de que el 'default
+    router' ha sido asignado adecuadamente en el cliente, forzando una
+    reconfiguración haciendo 'release' y reinvocándolo con:
+
+    \begin{verbatim}
+        dhclient -r && dhclient eth0
+    \end{verbatim}
+
+    Y luego revisar la tabla de rutas en cliente con el comando:
+
+    \begin{verbatim}
+        netstat -nr
+    \end{verbatim}
     
+   \framebreak 
+
+    Además de la opción 'routers' el cliente DHCP también necesita una máscara
+    de sub-red y un servidor de dominio. Digamos que la red MAY tiene un
+    servidor DNS en la dirección 192.168.11.253 y que la máscara de red para
+    todas las redes es 255.255.255.0. El bloque de configuración para expresar
+    esto sería algo como:\\[0.2cm]
+    \begin{verbatim}
+# subnet para servidores
+    subnet 192.168.11.0 netmask 255.255.255.0 {
+        range 192.168.11.1 192.168.11.251;
+# 192.168.11.252 reservada para el DHCP 
+# 192.168.11.253 reservada para el DNS 
+# 192.168.11.254 reservada para el router 
+        option routers 192.168.11.254;
+        option subnet-mask 255.255.255.0;
+        option domain-name-servers 192.168.11.253;
+    }
+# subnet 1 para escritorios
+subnet 192.168.12.0 netmask 255.255.255.0 {
+    range 192.168.12.1 192.168.12.253;
+# 192.168.12.254 reservada para el router 
+    option routers 192.168.12.254;
+    option subnet-mask 255.255.255.0;
+    option domain-name-servers 192.168.11.253;
+}
+# subnet 2 para escritorios
+subnet 192.168.13.0 netmask 255.255.255.0 {
+    range 192.168.13.1 192.168.13.253;
+# 192.168.13.254 reservada para el router 
+    option routers 192.168.13.254;
+    option subnet-mask 255.255.255.0;
+    option domain-name-servers 192.168.11.253;
+}
+# subnet 3 para escritorios
+subnet 192.168.14.0 netmask 255.255.255.0 {
+    range 192.168.14.1 192.168.14.253;
+# 192.168.14.254 reservada para el router 
+    option routers 192.168.14.254;
+    option subnet-mask 255.255.255.0;
+    option domain-name-servers 192.168.11.253;
+}
+# subnet 4 para escritorios
+subnet 192.168.15.0 netmask 255.255.255.0 {
+    range 192.168.15.1 192.168.15.253;
+# 192.168.15.254 reservada para el router 
+    option routers 192.168.15.254;
+    option subnet-mask 255.255.255.0;
+    option domain-name-servers 192.168.11.253;
+}
+\end{verbatim}
+
+\framebreak
+
+    \textbf{Ejercicio:} Configure las respectivas líneas de configuración, para
+    que el servidor DHCP disponible en el laboratorio envíe la información de
+    servidor DNS y máscara de red adecuada para su cliente DHCP. Emplee el
+    servidor DNS de su elección. La máscara de red ha de ser
+    255.255.255.0\\[0.2cm]
+
 \end{frame}
 
 \subsection{Especificando leases} % (fold)
@@ -584,13 +789,137 @@ sub-red}
 
 \begin{frame}[allowframebreaks,fragile]{Duración de los leases}
 
-    Lorem ipsum
+    \textit{Lease} se considera al mecanismo a través del que un servidor DHCP sabe
+    cuando un dispositivo dejará de usar una dirección IP. La especificación
+    del RFC del DHCP establece que el tiempo máximo de un \textit{lease} es
+    ${2^{32}}-2$ segundos, equivalente a 49.710 días o alrededor de 135
+    años.\\[0.2cm]
+
+    La especificación de DHCP no incluye reglas para la duración de
+    \textit{leases}, las políticas deben ser definidas por el arquitecto de la
+    red e implementadas por el servidor DHCP. Un cliente DHCP podría solicitar
+    un \textit{lease} con una duración particular, pero el servidor DHCP
+    siempre eligirá una duración basada en las políticas de \textit{lease}
+    definidas por el arquitecto, plasmadas en los archivos de configuración.\\[0.2cm]
+
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]{Por omisión, mínimo y máxima duración
+de lease}
+   
+    El servidor DHCP del ISC permite que el arquitecto de la red especifique
+    una duración 'por omisión' (default), un tiempo mínimo de duración del \textit{lease} y
+    un tiempo máximo de duración del \textit{lease}. El \textit{lease} 'por
+    omisión' se usa cuando el cliente no especifica un \textit{lease} en
+    particular.\\[0.2cm]
     
+    El tiempo mínimo de \textit{lease} se usa para forzar al
+    cliente a usar un \textit{lease} superior al que ha solicitado. El máximo
+    tiempo de \textit{lease} define el tiempo más prolongado de \textit{lease}
+    que puede asignar el servidor. Si un cliente solicita un \textit{lease}
+    superior al máximo establecido en la configuración, entonces se le asigna
+    el máximo \textit{lease} posible a dicho cliente.\\[0.2cm]
+
+    A continuación un ejemplo de las tres opciones respectivamente:
+
+    \begin{verbatim}
+        default-lease-time tiempo-en-segundos:
+        min-lease-time tiempo-en-segundos;
+        max-lease-time tiempo-en-segundos;
+    \end{verbatim}
+
 \end{frame}
 
 \begin{frame}[allowframebreaks,fragile]{Leases en la red MAY}
 
-    Lorem ipsum
+    Para ver un ejemplo, digamos que en la red MAY la sub-red 192.168.11.0 se usa para servidores,
+    que tienen un 'default' de 90 días. Las sub-redes 192.168.12.0, 192.168.13.0,
+    y 192.168.14.0 se usan para máquinas de escritorio del personal, que tienen
+    asignado un \textit{lease} de 30 días. La sub-red restante, 192.168.15.0, es
+    usada para computadores de visitantes y dicho \textit{lease} solo dura 12 horas.\\[0.2cm]
+
+    El bloque de configuración sería algo como:
+\begin{verbatim}
+option domain-name-servers “dns1.miservidorDNS.com”,
+“dns2.miservidorDNS.com”;
+option domain-name “dominiogenerico.com”;
+# default lease = 30 días, max lease = 45 días
+default-lease-time 2592000;
+max-lease-time 3888000;
+# subnet para servidores
+    subnet 192.168.11.0 netmask 255.255.255.0 {
+        range 192.168.11.1 192.168.11.251;
+# 192.168.11.252 reservada para el DHCP 
+# 192.168.11.253 reservada para el DNS 
+# 192.168.11.254 reservada para el router 
+        option routers 192.168.11.254;
+        option subnet-mask 255.255.255.0;
+        option domain-name-servers 192.168.11.253;
+# lease por default = 90 días, lease máximo = 120 días
+        default-lease-time 7776000;
+        max-lease-time 10368000;
+    }
+# subnet 1 para escritorios
+subnet 192.168.12.0 netmask 255.255.255.0 {
+    range 192.168.12.1 192.168.12.253;
+# 192.168.12.254 reservada para el router 
+    option routers 192.168.12.254;
+    option subnet-mask 255.255.255.0;
+    option domain-name-servers 192.168.11.253;
+# lease por default = 30 días, lease máximo = 45 días
+    default-lease-time 2592000;
+    max-lease-time 3888000;
+}
+# subnet 2 para escritorios
+subnet 192.168.13.0 netmask 255.255.255.0 {
+    range 192.168.13.1 192.168.13.253;
+# 192.168.13.254 reservada para el router 
+    option routers 192.168.13.254;
+    option subnet-mask 255.255.255.0;
+    option domain-name-servers 192.168.11.253;
+# lease por default = 30 días, lease máximo = 45 días
+    default-lease-time 2592000;
+    max-lease-time 3888000;
+}
+# subnet 3 para escritorios
+subnet 192.168.14.0 netmask 255.255.255.0 {
+    range 192.168.14.1 192.168.14.253;
+# 192.168.14.254 reservada para el router 
+    option routers 192.168.14.254;
+    option subnet-mask 255.255.255.0;
+    option domain-name-servers 192.168.11.253;
+# lease por default = 30 días, lease máximo = 45 días
+    default-lease-time 2592000;
+    max-lease-time 3888000;
+}
+# subnet 4 para visitantes
+subnet 192.168.15.0 netmask 255.255.255.0 {
+    range 192.168.15.1 192.168.15.253;
+# 192.168.15.254 reservada para el router 
+    option routers 192.168.15.254;
+    option subnet-mask 255.255.255.0;
+    option domain-name-servers 192.168.11.253;
+# lease por default = 12 horas, lease máximo = 24 horas
+    default-lease-time 43200;
+    max-lease-time 86400;
+\end{verbatim}
+
+\framebreak
+
+    \textbf{Ejercicio:} Establecer leases 'default', máximos y mínimos para el
+    servidor DHCP disponible en el laboratorio con la duración de: 1 semana, 1
+    mes y 1 día respectivamente, recuerde que la unidad de tiempo a emplear en
+    la configuración, son segundos.\\[0.2cm]
+    
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]{Opciones que son valores globales}
+
+    El ejemplo anterior también nos ayudó a visualizar que se pueden definir
+    variables globales, como la duración de los \textit{leases} que
+    posteriormente se sobre-escriben con las definiciones locales para cada
+    sub-red, permitiéndonos ahorrar líneas de configuración
+    innecesaria.\\[0.2cm]
     
 \end{frame}
 
@@ -599,33 +928,25 @@ sub-red}
 
 % subsection Otras opciones de DHCP (end)
 
-\begin{frame}[allowframebreaks,fragile]{Opciones de sub-red}
-
-    Lorem ipsum
+\begin{frame}[allowframebreaks,fragile]{Configurando otros servicios}
     
+    Otras opciones pueden ser usadas como parámetros de configuración que el
+    arquitecto de la red podría usar para definir, desde el DHCP server, estas
+    se encuentran definidas en el RFC 2132. Algunas muy usadas y otras
+    totalmente en desuso, a continuación un listado:
+
+    \begin{verbatim}
+swap-server         time-servers            domain-name-servers
+log-servers         cookie-servers          lpr-servers
+nis-servers         ntp-servers             netbios-name-servers
+font-servers        x-display-managers      nis-plus-servers
+tftp-server-name    smtp-server             pop-server
+nntp-server         www-server              finger-server
+irc-server          impress-server          streettalk-server 
+    \end{verbatim} 
+
 \end{frame}
 
-\begin{frame}[allowframebreaks,fragile]{Opciones que son valores globales}
 
-    Lorem ipsum
-    
-\end{frame}
-
-\subsection{Extendiendo un lease} % (fold)
-\label{sub:Extendiendo un lease}
-
-% subsection Extendiendo un lease (end)
-
-\begin{frame}[allowframebreaks,fragile]{Extendiendo un lease en la red MAY} 
-
-    Lorem ipsum
-    
-\end{frame}
-
-\begin{frame}[allowframebreaks,fragile]{Otra información de configuración}
-    
-
-
-\end{frame}
 
 \end{document}
