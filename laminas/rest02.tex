@@ -1,90 +1,315 @@
 \input{preambulo.tex}
-
-% Titulo
-\title[REST] {WebService REST con Catalyst}
-\author[Walter Vargas]{ info@covetel.com.ve \inst{1}}
-\subtitle{Fundamentos de REST}
-\institute[covetel.com.ve]{ \inst{1} Cooperativa Venezolana de Tecnologías Libres R.S. }
-\date
+\hyphenpenalty10000
 
 \begin{document}
 
-\section{Fundamentos de REST}
+\section{Formato de los mensajes DHCP} % (fold)
+\label{sec:Formato de los mensajes DHCP}
 
-\begin{frame}{¿Qué es un Servicio Web?} % (fold)
-El consorcio W3C define los Servicios Web  como sistemas software diseñados para 
-soportar una interacción interoperable maquina a maquina sobre una red. Los Servicios 
-Web suelen ser APIs Web que pueden ser accedidas dentro de una red (principalmente 
-Internet) y son ejecutados en el sistema que los aloja.   
+% section Formato de los mensajes DHCP (end)
 
-\end{frame}
+\subsection{Vistazo general al formato de un mensaje} % (fold)
 
-\begin{frame}{Que es REST} % (fold)
-REST (Representational State Transfer) es un estilo de arquitectura de software para 
-sistemas hipermedias distribuidos tales como la Web. El término fue introducido en la 
-tesis doctoral de Roy Fielding en 2000, quien es uno de los principales autores de la 
-especificación de HTTP. 
-\end{frame}
+% subsection Vistazo general al formato de un mensaje (end)
 
-\begin{frame}{Los 4 principios de REST} % (fold)
-\begin{itemize}
-	 \item utiliza los métodos HTTP de manera explícita
-	 \item no mantiene estado
-	 \item expone URIs con forma de directorios
-	 \item transfiere XML, JavaScript Object Notation (JSON), o ambos
-\end{itemize}
-\end{frame}
+\begin{frame}[fragile]{Origen del formato de mensaje de DHCP}
 
-\begin{frame}{REST utiliza los verbos HTTP de manera explícita} % (fold)
-    REST hace que los desarrolladores usen los métodos HTTP explícitamente de
-    manera que resulte consistente con la definición del protocolo. Este
-    principio de diseño básico establece una asociación uno-a-uno entre las
-    operaciones de crear, leer, actualizar y borrar y los métodos HTTP. De
-    acuerdo a esta asociación:
+    Los clientes y servidores se comunican intercambiando mensajes como se
+    describe en la especificación del protocolo. Todos los mensajes DHCP
+    comparten un formato común que describiremos ahora.\\[0.2cm]
 
-\begin{itemize}
-	 \item se usa POST para crear un recurso en el servidor
-	 \item se usa GET para obtener un recurso
-	 \item se usa PUT para cambiar el estado de un recurso o actualizarlo
-	 \item se usa DELETE para eleminar un recurso
-\end{itemize}
+    DHCP fue desarrollado a partir de BOOTP (ver RFC 951) y usa un formato de
+    mensaje que se basa en su especificación. Como DHCP comparte los puertos
+    UDP 67 y 68 con BOOTP, los mensajes DHCP incluyen una opción especial en el
+    campo 'option' que los diferencia de los mensajes BOOTP.\\[0.2cm]
 
-\end{frame}
+\end{frame} 
 
-\begin{frame}{REST no mantiene estado} % (fold)
-Los servicios web REST necesitan escalar para poder satisfacer una demanda en
-constante crecimiento. Se usan clusters de servidores con balanceadores de
-carga y alta disponibilidad, proxies, y gateways de manera de conformar una
-topología serviciable, que permita transferir peticiones de un equipo a otro
-para disminuir el tiempo total de respuesta de una invocación al servicio web.
-El uso de servidores intermedios para mejorar la escalabilidad hace necesario
-que los clientes de servicios web REST envien peticiones completas e
-independientes; es decir, se deben enviar peticiones que inlcuyan todos los
-datos necesarios para cumplir el pedido, de manera que los componentes en los
-servidores intermedios puedan redireccionar y gestionar la carga sin mantener
-el estado localmente entre las peticiones.
+\begin{frame}[fragile]{Descripción del formato de mensaje}
+
+    Todos los mensajes DHCP incluyen una sección de formato fijo y una sección
+    de formato variable. La sección de formato fijo contiene varios campos que
+    siempre están presentes y la parte de formato variable es la que lleva las
+    opciones adicionales que no siempre se incluyen (servicios por
+    ejemplo).\\[0.2cm]
+
+    La sección de formato fijo y formato de la parte variable cambian
+    dependiendo del tipo de mensaje que esté siendo enviado. La sección de
+    formato fijo se divide en varios campos que llevan información como:
+    \begin{itemize}
+        \item La dirección de red y dirección física del cliente
+        \item La dirección IP del servidor
+        \item Información de control sobre el mensaje
+    \end{itemize}
+
+    Estos campos aparecen en todos los mensajes DHCP, a pesar de que no todos
+    los campos se usan en todos los tipos de mensaje.
 
 \end{frame}
 
-\begin{frame}{Guias Generales para crear URLS REST} % (fold)
-\begin{itemize}
+\begin{frame}[fragile,allowframebreaks]{La sección de formato fijo}
+
+    Esta sección tal y como la veremos en la próxima página, aparece en todos
+    los mensajes DHCP. Cada fila representa 32 bits de la sección de formato
+    fijo. Los campos individuales están etiquetados con el nombre del campo.
+    Algunos de los campos más largos están resumidos en la figura y su longitud
+    se describe explicitamente.\\[0.2cm]
+
+    \framebreak
     
-	 \item Ocultar la tecnología usada en el servidor que aparecería como extensión de archivos (.jsp, .php, .asp), de manera de poder portar la solución a otra tecnología sin cambiar las URI.
-	 \item Mantener todo en minúsculas.
-	 \item Sustituir los espacios con guiones o guiones bajos (uno u otro).
-	 \item Evitar el uso de strings de consulta.
-	 \item en vez de usar un 404 Not Found si la petición es una URI parcial, devolver una página o un recurso predeterminado como respuesta.
-\end{itemize}
+    \begin{figure}
+    \begin{center}
+
+    \includegraphics[scale=0.50]{images/6-1.png}
+    \caption{Diagrama del formato fijo de un mensaje DHCP}
+    \label{FIXED-1}
+
+    \end{center}
+    \end{figure}
+
+
+\framebreak
+
+\begin{tabular}{ l p{0.8\textwidth} }
+\hline
+\textbf{Campo} & \textbf{Descripción} \\ 
+\hline
+op & Código de operación de mensaje; valor de 1 en los mensajes enviados por un
+cliente y 2 en los mensajes enviados por el servidor. Los dos posibles valores
+para 'op' son heredados de BOOTP para retro-compatibilidad. \\
+\hline
+htype & Tipo de dirección física, definiciones tomadas de la lista de la IANA
+para tipos de hardware (ver RFC 1700). Por ejemplo, el tipo de 'Ethernet' esta
+especificado cuando htype tiene valor 1. \\
+\hline
+hlen & Longitud de la dirección física en bytes, define la longitud de la
+dirección física en el campo 'chaddr' \\
+\hline
+hops & Cantidad de 'relay agents' que han re-enviado el mensaje \\
+\hline
+xid & Identificador de transacción; usado por los clientes para relacionar
+respuestas de un servidor con las peticiones transmitidas previamente \\
+\hline
+secs & Tiempo pasado en segundos, desde que el cliente ha comenzado el proceso
+DHCP \\ 
+\hline
+flags & el bit menos significativo, llamado el 'bit de broadcast' puede tener
+el valor de '1' para indicar que el mensaje al cliente debe ser enviado en modo
+broadcast \\
+\end{tabular}
+
+\framebreak
+
+\begin{tabular}{ l p{0.8\textwidth} }
+\hline
+\textbf{Campo} & \textbf{Descripción} \\ 
+\hline
+ciaddr & Dirección IP del cliente; establecida por el cliente solo cuando el
+cliente ha confirmado que la dirección IP es válida \\
+\hline
+yiaddr & Dirección IP del cliente; establecida por el servidor para informar al
+cliente de su dirección IP (your IP address) \\
+\hline
+siaddr & La dirección IP del siguiente 'servidor' que el cliente debe consultar
+en su proceso de configuración (por ejemplo el servidor a contactar para
+descargar un kernel por TFTP) \\
+\hline
+giaddr & Dirección del 'relay agent' o 'gateway IP address' establecida por el
+'relay agent' con la dirección de la interfaz a través de la que el mensaje fue
+recibido \\
+\hline
+chaddr & Dirección física del cliente \\
+\hline
+sname & Nombre del siguiente servidor que el cliente debe contactar en el
+proceso de configuración \\
+\hline
+file & Nombre del archivo que el cliente debe solicitar del siguiente servidor,
+por ejemplo el nombre del archivo que contiene el sistema operativo para este
+cliente \\
+\hline
+\end{tabular}
+
 \end{frame}
 
-\begin{frame}{REST transfiere XML, JSON, o ambos} % (fold)
-La representación de un recurso en general refleja el estado actual del mismo y sus atributos al momento en que el cliente de la aplicación realiza la petición. La representación del recurso son simples "fotos" en el tiempo. Esto podría ser una representación de un registro de la base de datos que consiste en la asociación entre columnas y tags XML, donde los valores de los elementos en el XML contienen los valores de las filas. O, si el sistema tiene un modelo de datos, la representación de un recurso es una fotografía de los atributos de una de las cosas en el modelo de datos del sistema. Estas son las cosas que serviciamos con servicios web REST.
+\begin{frame}{Opción: tipo de mensaje DHCP}
+    
+    La opción 'tipo de mensaje' incluída en cada mensaje contiene la opción de código
+    53, la longitud del campo (1) y el tipo de mensaje, en un solo byte con uno
+    de los siguientes valores:\\[0.2cm]
+
+\begin{tabular}{ l c }
+\hline
+\textbf{Tipo de mensaje} & \textbf{Valor de opción} \\ 
+\hline
+DHCPDISCOVER & 1 \\
+\hline
+DHCPOFFER & 2 \\
+\hline
+DHCPREQUEST & 3 \\
+\hline
+DHCPDECLINE & 4 \\
+\hline
+DHCPACK & 5 \\
+\hline
+DHCPNAK & 6 \\
+\hline
+DHCPRELEASE & 7 \\
+\hline
+DHCPINFORM & 8 \\
+\hline
+DHCPFORCERENEW & 9 \\
+\hline
+\end{tabular}
+
 \end{frame}
 
-\begin{frame}{RESTful y RESTafaris} % (fold)
-    A las aplicaciones que siguen los principios de REST se les llama
-    \textit{RESTful} y los desarrolladores que defienden REST se les dice
-    \textit{RESTafaris}
+\subsection{Transmisión de mensajes DHCP} % (fold)
+
+% subsection Transmisión de mensajes DHCP (end)
+
+\begin{frame}[fragile]{Uso de UDP para DHCP}
+
+    El cliente envía todos sus mensajes DHCP al el puerto 67 (puerto por donde
+    espera peticiones el servidor) y usa el puerto 68 como puerto de origen y
+    usa el puerto 68 como puerto de origen. El cliente usa \textit{broadcast} en caso
+    de que aún no tenga una dirección. Si el cliente sabe la dirección de un
+    servidor DHCP y tiene asignado un IP, envía el mensaje directamente al
+    servidor.\\[0.2cm]
+
 \end{frame}
+
+\begin{frame}[fragile]{Múltiples agentes de relay}
+
+    Un mensaje DHCP puede ser re-enviado por más de un 'relay agent'. En este
+    caso el segundo 'relay agent' detecta que el campo 'giaddr' ya tiene un
+    valor distinto a 0.0.0.0. Dicho mensaje es reenviado, aumentando el valor
+    de encabezado 'hops' sin cambiar 'giaddr'.\\[0.2cm]
+
+    Desde el punto de vista del servidor, al recibir un mensaje que ha sido
+    re-enviado por varios 'relay agent', 'giaddr' contiene el IP del primer
+    'relay agent', así el servidor responde de manera directamente a la
+    dirección especificada allí, saltándose cualquier 'relay agent'
+    intermedio.\\[0.2cm]
+
+\end{frame}
+
+\begin{frame}[fragile]{Entrega confiable de mensajes}
+
+   Como UDP no garantiza la entrega de mensajes, DHCP se encarga de garantizar
+   la entrega confiable. Un cliente usa la respuesta de un servidor como una
+   notificación implícita de que se recibió el mensaje. Si el cliente
+   no recibe una respuesta, retransmite el mensaje hasta que
+   reciba una respuesta, o hasta que decida que el servidor no va a
+   responder.\\[0.2cm]
+
+   La especificación de DHCP establece el tiempo que debe esperar un cliente
+   antes de retransmitir un mensaje. El cliente espera 4 segundos antes de la
+   primera retransmisión. Luego duplica el tiempo en espera entre
+   retransmisiones, hasta un máximo de 64 segundos.\\[0.2cm]
+
+   No hay un recurso en DHCP para que el servidor DHCP responda a un mensaje
+   DHCPDISCOVER con algo como 'no puedo proveer servicio'. Por lo tanto cuando
+   un servidor DHCP no es capaz de atender un cliente, simplemente ignora la
+   petición. Esto puede pasar porque no tenga IPs disponibles para asignar o
+   porque esté configurado para no responder a un(os) cliente(s)
+   determinado(s)\\[0.2cm]
+
+\end{frame}
+
+\begin{frame}[fragile]{Evitando colisiones de mensajes}
+
+    DHCP incluye dos mecanismos para disminuir la probabilidad de sobrecargar
+    un servidor con mensajes de los clientes. Primero, a un cliente se le puede
+    exigir, que retrase su mensaje inicial una cantidad de segundos al azar
+    entre 0 y 10 segundos. Otra medida, un cliente DHCP reajustará su tiempo de
+    retraso entre retransmisiones de mensaje, con un valor aleatorio de entre
+    -1 y 1 para evitar colisión con los mensajes de otro servidor.\\[0.2cm]
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Otros modos de transmisión}
+
+    DHCPREQUEST se emplea en cuatro fases de la vida de un \textit{lease}:
+
+    \begin{itemize}
+        \item Durante la selección inicial de un \textit{lease}
+        \item Al confirmar la validez de una dirección después de reiniciar
+        \item Cuando el lease es renovado desde cualquier punto de su duración
+        \item Cuando la renovación de \textit es rechazado cerca del final de
+        su duración\\[0.2cm]
+    \end{itemize}
+
+    DHCPINFORM es implementado por un cliente que no necesita obtener una
+    dirección IP, por ejemplo un servidor con una dirección IP configurada
+    manualmente, podría usar un mensaje de este tipo para obtener información
+    sobre la red, tal como dirección de servidor NTP, servidores de nombres o
+    servidores de impresión. En cualquier caso, el cliente necesita tener su
+    propia dirección IP configurada para que pueda asignarla como IP de origen
+    en su mensaje\\[0.2cm]
+
+    DHCPRELEASE es empleado para notificar que el cliente va a dejar de usar la
+    dirección IP que le había sido asignada, de acuerdo a la especificación, el
+    cliente deja de tener una dirección válida y por lo tanto no hay forma de
+    entregarla una confirmación de recibido\\[0.2cm]
+
+    DHCPFORCERENEW es el único mensaje que envía el servidor, sin haber sido
+    contactado por el cliente. Un servidor puede enviar un mensaje
+    DHCPFORCERENEW a cualquier cliente que tenga una dirección asignada por
+    DHCP. Es enviado en modo unicast y se emplea para actualizar datos de
+    configuración, forzando al cliente que haga un DHCPREQUEST\\[0.2cm]
+    
+    DHCPLEASEQUERY es un tipo de mensaje de creación reciente y se usa para
+    consultar datos sobre un cliente que tenga un \textit{lease} en el servidor
+    consultado. Esto sería útil para un 'relay agent' que haya perdido de su
+    cache, la información que relaciona un cliente DHCP y un servidor DHCP. En
+    tal caso el servidor DHCP revisa su base de datos de \textit{leases} y si
+    consigue la data solicitada, la envía en un mensaje DHCPACK al 'relay
+    agent' solicitante. Si no existen los datos solicitados, se reponde con un
+    mensaje DHCPNAK\\[0.2cm]
+
+\end{frame}
+
+\subsection{Otros intercambios de mensajes DHCP} % (fold)
+
+% subsection Intercambio de mensajes DHCP (end)
+
+    \begin{frame}{Estados del cliente}
+
+    \begin{figure}
+    \begin{center}
+
+    \includegraphics[scale=0.60]{images/8-1.png}
+    \caption{Maquina de estado finito para un cliente DHCP}
+    \label{States-1}
+
+    \end{center}
+    \end{figure}
+
+    \end{frame}
+
+
+    \begin{frame}{Al solicitarse un IP desde una nueva subred}
+    \begin{figure}
+    \begin{center}
+
+    \includegraphics[scale=0.80]{images/8-5.png}
+    \caption{Un cliente DHCP para obtener una dirección desde una nueva subred}
+    \label{States-2}
+
+    \end{center}
+    \end{figure}
+    \end{frame}
+
+    \begin{frame}{Al solicitarse un IP, con dos servidores y el cliente reinicia}
+    \begin{figure}
+    \begin{center}
+
+    \includegraphics[scale=0.60]{images/8-6.png}
+    \caption{Mensajes entre un cliente y dos servidores DHCP, cuando el cliente reinicia}
+    \label{States-3}
+
+    \end{center}
+    \end{figure}
+    \end{frame}
 
 \end{document}

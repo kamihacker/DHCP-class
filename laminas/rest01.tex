@@ -1,4 +1,5 @@
 \input{preambulo.tex}
+\hyphenpenalty10000
 
 % Titulo
 \title[DHCP] {DHCP del Internet Software Consortium}
@@ -103,7 +104,7 @@
     \end{verbatim}
 
     Se encarga de contar todas las coincidencias de la cadena DHCP en el
-    archivo dhcp.log
+    archivo dhcpd.log
 
     Usando el comando 'man' se puede leer el manual de cada uno de los otros
     comandos y así tener una referencia sobre que switches y opciones están
@@ -127,15 +128,15 @@
         \item Contar la cantidad de directorios que tiene la raíz del sistema
         de archivos
         \item Contar la cantidad de líneas que contienen la palabra 'kernel' en
-        /var/log/syslog
+        el archivo /var/log/syslog
         \item Extraer las direcciones IP configuradas en la máquina local (sin
         espacios o caracteres adicionales) (tip: comando /sbin/ifconfig)
         \item Extraer las líneas que contienen la palabra error (sin prestar
-        atención a mayúsculas o minúsculas) del comando dmesg
+        atención a mayúsculas o minúsculas) del archivo /root/dmesg.txt
         \item Contar la cantidad de líneas con DHCPDISCOVER que tiene el
-        archivo dhcp.log para el día 20 de Diciembre
+        archivo /root/dhcpd.log para el día 20 de Diciembre
         \item Emitir una lista de todos los mensajes de tipo DHCP registrados
-        en el archivo dhcp.log y que cantidad de cada uno existen allí
+        en el archivo /root/dhcpd.log y que cantidad de cada uno existen allí
     \end{itemize}
     
 \end{frame}
@@ -946,7 +947,5 @@ irc-server          impress-server          streettalk-server
     \end{verbatim} 
 
 \end{frame}
-
-
 
 \end{document}
